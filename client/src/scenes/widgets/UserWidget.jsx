@@ -44,7 +44,7 @@ const UserWidget = ({ userId, isOwnProfile, propPicturePath }) => {
       const idToFetch = isOwnProfile ? loggedInUserId : userId;
 
       const response = await fetch(
-        `http://localhost:5000/users/${idToFetch}/profile`,
+        `https://sociopedia-6tzx.onrender.com/users/${idToFetch}/profile`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },

@@ -154,7 +154,7 @@ const HomePage = () => {
     }
 
     try {
-      const url = `http://localhost:5000/search?keyword=${queryString}&type=${type}&page=1&limit=9`;
+      const url = `https://sociopedia-6tzx.onrender.com/search?keyword=${queryString}&type=${type}&page=1&limit=9`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -177,11 +177,14 @@ const HomePage = () => {
   // Fetch Categories
   const fetchCategories = async (token) => {
     try {
-      const response = await fetch("http://localhost:5000/category", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "https://sociopedia-6tzx.onrender.com/category",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -200,11 +203,14 @@ const HomePage = () => {
   // Fetch Techxtrosavings
   const fetchTechxtrosavings = async (token) => {
     try {
-      const response = await fetch("http://localhost:5000/techxtro-savings", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "https://sociopedia-6tzx.onrender.com/techxtro-savings",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -225,11 +231,14 @@ const HomePage = () => {
   // Fetch Property Rentals
   const fetchPropertyRentals = async (token) => {
     try {
-      const response = await fetch("http://localhost:5000/property-rentals", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "https://sociopedia-6tzx.onrender.com/property-rentals",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -254,7 +263,7 @@ const HomePage = () => {
         if (!_id) return;
 
         const response = await fetch(
-          `http://localhost:5000/users/${_id}/friends`,
+          `https://sociopedia-6tzx.onrender.com/users/${_id}/friends`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -352,7 +361,6 @@ const HomePage = () => {
           <Box>
             <UserWidget userId={loggedInUserId} isOwnProfile={isOwnProfile} />
           </Box>
-
         </Box>
 
         {/* Right Column - Posts and MyPostWidgets */}

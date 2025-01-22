@@ -98,7 +98,7 @@ const SearchPage = () => {
     }
 
     try {
-      const url = `http://localhost:5000/search?keyword=${encodeURIComponent(
+      const url = `https://sociopedia-6tzx.onrender.com/search?keyword=${encodeURIComponent(
         query
       )}&type=${type}&page=${page}&limit=${limit}`;
       const response = await fetch(url, {
@@ -416,7 +416,7 @@ const SearchPage = () => {
                             color: (theme) =>
                               theme.palette.mode === "dark"
                                 ? "#00B8D4"
-                                : "#004E72", 
+                                : "#004E72",
                           }}
                         >
                           {profile.description.slice(0, 20)}

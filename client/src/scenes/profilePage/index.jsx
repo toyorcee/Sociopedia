@@ -28,7 +28,7 @@ const ProfilePage = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/users/${userId}/profile`,
+        `https://sociopedia-6tzx.onrender.com/users/${userId}/profile`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },

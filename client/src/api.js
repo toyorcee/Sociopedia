@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create Axios instance
 const api = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://sociopedia-6tzx.onrender.com",
   headers: {
     "Content-Type": "application/json",
   },

@@ -5,10 +5,7 @@ import PostWidget from "./PostWidget";
 import { CircularProgress, Box, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 
-const PostsWidget = ({
-  isProfilePage = false,
-  posts: profilePosts = [],
-}) => {
+const PostsWidget = ({ isProfilePage = false, posts: profilePosts = [] }) => {
   const dispatch = useDispatch();
   const allPosts = useSelector((state) => state.posts);
   const token = useSelector((state) => state.token);
@@ -20,10 +17,13 @@ const PostsWidget = ({
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("http://localhost:5000/posts", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await fetch(
+        "https://sociopedia-6tzx.onrender.com/posts",
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.json();
@@ -90,12 +90,7 @@ const PostsWidget = ({
         </Box>
       ) : (
         sortedPosts.map((post) => {
-          return (
-            <PostWidget
-              key={post._id}
-              post={post} 
-            />
-          );
+          return <PostWidget key={post._id} post={post} />;
         })
       )}
     </>

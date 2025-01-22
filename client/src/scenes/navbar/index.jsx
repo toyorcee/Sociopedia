@@ -70,7 +70,7 @@ const Navbar = () => {
     }
 
     try {
-      const url = `http://localhost:5000/search?keyword=${query}&type=${
+      const url = `https://sociopedia-6tzx.onrender.com/search?keyword=${query}&type=${
         type || ""
       }&page=1&limit=9`;
 

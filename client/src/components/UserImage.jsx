@@ -107,7 +107,7 @@ const UserImage = ({ size = "60px", propPicturePath = null }) => {
         // Otherwise, fetch and cache the image
         const imageUrl = await fetchImageWithCache(
           picturePath,
-          `http://localhost:5000/assets/${picturePath}`,
+          `https://sociopedia-6tzx.onrender.com/assets/${picturePath}`,
           token,
           dispatch
         );

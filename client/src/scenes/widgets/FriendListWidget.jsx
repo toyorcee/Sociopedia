@@ -26,7 +26,7 @@ const FriendListWidget = ({ isProfilePage, friends: profileFriends }) => {
       setError(null);
 
       const response = await fetch(
-        `http://localhost:5000/users/${userId}/friends`,
+        `https://sociopedia-6tzx.onrender.com/users/${userId}/friends`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },

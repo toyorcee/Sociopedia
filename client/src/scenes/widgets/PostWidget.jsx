@@ -287,7 +287,7 @@ const PostWidget = ({ post }) => {
     // Optimistic update
     dispatch(optimisticLikePost({ postId, userId: loggedInUserId, isLiked }));
 
-    const apiUrl = `http://localhost:5000/posts/${postId}/like`;
+    const apiUrl = `https://sociopedia-6tzx.onrender.com/posts/${postId}/like`;
     console.log("patchLike - API URL:", apiUrl);
 
     try {
@@ -325,17 +325,20 @@ const PostWidget = ({ post }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:5000/posts/${postId}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          description: newDescription,
-          location: newLocation,
-        }),
-      });
+      const response = await fetch(
+        `https://sociopedia-6tzx.onrender.com/posts/${postId}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            description: newDescription,
+            location: newLocation,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.json(); // Parse JSON error response
@@ -400,7 +403,7 @@ const PostWidget = ({ post }) => {
       setError(null);
 
       const response = await fetch(
-        `http://localhost:5000/posts/${postId}/comments`,
+        `https://sociopedia-6tzx.onrender.com/posts/${postId}/comments`,
         {
           method: "POST",
           headers: {
@@ -496,7 +499,7 @@ const PostWidget = ({ post }) => {
       setError(null);
 
       const response = await fetch(
-        `http://localhost:5000/posts/${postId}/comments/${replyState.parentCommentId}/replies`,
+        `https://sociopedia-6tzx.onrender.com/posts/${postId}/comments/${replyState.parentCommentId}/replies`,
         {
           method: "POST",
           headers: {
@@ -559,7 +562,7 @@ const PostWidget = ({ post }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/posts/comments/${commentId}/like`,
+        `https://sociopedia-6tzx.onrender.com/posts/comments/${commentId}/like`,
         {
           method: "PATCH",
           headers: {
@@ -628,7 +631,7 @@ const PostWidget = ({ post }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/posts/${postId}/comments/${commentId}/replies/${replyId}/like`,
+        `https://sociopedia-6tzx.onrender.com/posts/${postId}/comments/${commentId}/replies/${replyId}/like`,
         {
           method: "PATCH",
           headers: {
@@ -681,7 +684,7 @@ const PostWidget = ({ post }) => {
 
       // API call to delete comment
       const response = await fetch(
-        `http://localhost:5000/posts/comments/${commentId}`,
+        `https://sociopedia-6tzx.onrender.com/posts/comments/${commentId}`,
         {
           method: "DELETE",
           headers: {
@@ -718,7 +721,7 @@ const PostWidget = ({ post }) => {
 
       // API call to delete reply
       const response = await fetch(
-        `http://localhost:5000/posts/${postId}/comments/${commentId}/replies/${replyId}`,
+        `https://sociopedia-6tzx.onrender.com/posts/${postId}/comments/${commentId}/replies/${replyId}`,
         {
           method: "DELETE",
           headers: {
@@ -765,7 +768,7 @@ const PostWidget = ({ post }) => {
       page = Number(page);
       limit = Number(limit);
 
-      const url = `http://localhost:5000/posts/${postId}/comments?page=${page}&limit=${limit}`;
+      const url = `https://sociopedia-6tzx.onrender.com/posts/${postId}/comments?page=${page}&limit=${limit}`;
       const response = await fetch(url, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -822,7 +825,7 @@ const PostWidget = ({ post }) => {
         return;
       }
 
-      const url = `http://localhost:5000/posts/${postId}/comments/${commentId}/replies?page=${page}&limit=${limit}`;
+      const url = `https://sociopedia-6tzx.onrender.com/posts/${postId}/comments/${commentId}/replies?page=${page}&limit=${limit}`;
       const response = await fetch(url, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -1147,7 +1150,7 @@ const PostWidget = ({ post }) => {
             height="auto"
             alt="post"
             style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-            src={`http://localhost:5000/assets/${picturePath}`}
+            src={`https://sociopedia-6tzx.onrender.com/assets/${picturePath}`}
           />
         )}
         <FlexBetween mt="0.25rem">

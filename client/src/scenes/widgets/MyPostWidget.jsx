@@ -54,11 +54,14 @@ const MyPostWidget = () => {
         console.log(`${pair[0]}:`, pair[1]);
       }
 
-      const response = await fetch(`http://localhost:5000/posts/create`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` }, // No Content-Type because of FormData
-        body: formData,
-      });
+      const response = await fetch(
+        `https://sociopedia-6tzx.onrender.com/posts/create`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` }, // No Content-Type because of FormData
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();

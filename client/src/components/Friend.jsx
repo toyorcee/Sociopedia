@@ -37,7 +37,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/users/${userId}/${friendId}`,
+        `https://sociopedia-6tzx.onrender.com/users/${userId}/${friendId}`,
         {
           method: "PATCH",
           headers: {
@@ -87,7 +87,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
-              maxWidth: "180px", 
+              maxWidth: "180px",
               "&:hover": {
                 color: primaryLight,
                 cursor: "pointer",
@@ -106,7 +106,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
         sx={{
           backgroundColor: primaryLight,
           p: "0.6rem",
-          marginLeft: "0.5rem", 
+          marginLeft: "0.5rem",
         }}
         disabled={loading}
       >

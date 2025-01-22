@@ -41,13 +41,16 @@ const AdvertForm = ({ isOpen, handleClose }) => {
     if (image) formData.append("adPicture", image);
 
     try {
-      const response = await fetch("http://localhost:5000/adverts/create", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      const response = await fetch(
+        "https://sociopedia-6tzx.onrender.com/adverts/create",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
