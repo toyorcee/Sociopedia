@@ -18,6 +18,7 @@ import propertyRentalsRoutes from "./routes/propertyRental.js";
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
+// import fs from "fs";
 // import User from "./models/User.js";
 // import Post from "./models/Post.js";
 // import Comment from "./models/Comment.js";
@@ -28,6 +29,7 @@ import { createAdvert } from "./controllers/advert.js";
 /* CONFIGURATIONS */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -44,7 +46,12 @@ app.use(
   })
 );
 
-app.use(express.static(path.join(__dirname, "client/build")));
+// console.log(
+//   "Build folder exists:",
+//   fs.existsSync(path.resolve(__dirname, "../client/build/index.html"))
+// );
+// Middleware to serve static files
+app.use(express.static(path.join(__dirname, "../client/build")));
 
 /* FILE STORAGE */
 const storage = multer.diskStorage({
@@ -80,7 +87,7 @@ app.use("/property-rentals", propertyRentalsRoutes);
 
 // Catch-all route to serve React's index.html for frontend routes
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "client/build", "index.html"));
+  res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
 });
 
 /* MONGOOSE SETUP */
