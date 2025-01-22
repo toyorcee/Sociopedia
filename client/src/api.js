@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Create Axios instance
 const api = axios.create({
@@ -6,14 +6,14 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // Ensure cookies are sent with the request
+  withCredentials: true, 
 });
 
 // Add the token to every request if available (from cookies or localStorage)
 // api.interceptors.request.use(
 //   (config) => {
 //     let token = localStorage.getItem("token"); // First, try getting from localStorage
-    
+
 //     // If token not found in localStorage, check cookies
 //     if (!token) {
 //       token = document.cookie.split(";").find(cookie => cookie.trim().startsWith("token="));
