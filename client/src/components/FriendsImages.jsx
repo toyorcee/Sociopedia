@@ -22,7 +22,7 @@ const FriendsImages = ({ friendId, picturePath }) => {
       } else {
         try {
           const response = await fetch(
-            `http://localhost:5000/assets/${picturePath}`
+            `https://sociopedia-6tzx.onrender.com/assets/${picturePath}`
           );
           const blob = await response.blob();
           const reader = new FileReader();

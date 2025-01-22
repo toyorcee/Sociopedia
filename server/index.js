@@ -44,7 +44,7 @@ app.use(
   })
 );
 
-app.use("/assets", express.static(path.join(__dirname, "public/assets")));
+app.use(express.static(path.join(__dirname, "client/build")));
 
 /* FILE STORAGE */
 const storage = multer.diskStorage({
