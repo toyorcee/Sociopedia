@@ -38,7 +38,7 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(
   cors({
-    origin: process.env.BASE_URL|| "http://localhost:3000",
+    origin: process.env.BASE_URL || "http://localhost:3000",
     methods: "GET,POST,PUT,DELETE,PATCH",
     allowedHeaders: "Content-Type,Authorization",
   })
@@ -77,6 +77,11 @@ app.use("/search", searchRoutes);
 app.use("/category", categoryRoutes);
 app.use("/techxtro-savings", techxtrosavingsRoutes);
 app.use("/property-rentals", propertyRentalsRoutes);
+
+// Catch-all route to serve React's index.html for frontend routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 5000;
