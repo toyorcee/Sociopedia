@@ -11,12 +11,19 @@ import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
+import searchRoutes from "./routes/search.js";
+import categoryRoutes from "./routes/category.js";
+import techxtrosavingsRoutes from "./routes/techxtrosavings.js";
+import propertyRentalsRoutes from "./routes/propertyRental.js";
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
-import User from "./models/User.js";
-import Post from "./models/Post.js";
-import { users, posts } from "./data/index.js";
+// import User from "./models/User.js";
+// import Post from "./models/Post.js";
+// import Comment from "./models/Comment.js";
+// import Reply from "./models/Reply.js";
+import { comments, replys, users } from "./data/index.js";
+import { createAdvert } from "./controllers/advert.js";
 
 /* CONFIGURATIONS */
 const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +36,13 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,POST,PUT,DELETE,PATCH",
+    allowedHeaders: "Content-Type,Authorization",
+  })
+);
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 /* FILE STORAGE */
@@ -45,12 +58,24 @@ const upload = multer({ storage });
 
 /* ROUTES WITH FILES */
 app.post("/auth/register", upload.single("picture"), register);
-app.post("/posts", verifyToken, upload.single("picture"), createPost);
+app.post("/posts/create", verifyToken, upload.single("picture"), createPost);
+// CREATE Ad
+app.post(
+  "/adverts/create",
+  verifyToken,
+  upload.single("adPicture"),
+  createAdvert
+);
 
 /* ROUTES */
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
+app.use("/adverts", postRoutes);
+app.use("/search", searchRoutes);
+app.use("/category", categoryRoutes);
+app.use("/techxtro-savings", techxtrosavingsRoutes);
+app.use("/property-rentals", propertyRentalsRoutes);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;
@@ -60,10 +85,14 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+    console.log("Mongodb is connected");
+    //start server
+    app.listen(PORT, () => console.log(`Server running on Port: ${PORT}`));
 
     /* ADD DATA ONE TIME */
     // User.insertMany(users);
     // Post.insertMany(posts);
+    // Comment.insertMany(comments);
+    // Reply.insertMany(replys);
   })
   .catch((error) => console.log(`${error} did not connect`));

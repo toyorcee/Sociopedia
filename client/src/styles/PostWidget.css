@@ -1,0 +1,45 @@
+.bubble {
+  position: absolute;
+  color: #00d5fa; /* Set heart color to #00d5fa */
+  font-size: 24px; /* Adjust size as needed */
+  animation: bubbleAnimation 1.5s ease-out forwards;
+  opacity: 0;
+  transform-origin: center bottom;
+}
+
+.bubble::before {
+  content: "❤"; /* Filled heart icon */
+}
+
+.highlighted {
+  animation: highlight-flash 2s ease;
+  transition: background-color 0.5s ease-in-out;
+}
+
+@keyframes highlight-flash {
+  0% {
+    color: #1bd9e6; /* Light yellow */
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* Animation to create the heart burst effect */
+@keyframes bubbleAnimation {
+  0% {
+    transform: scale(0.5) translateY(0);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.5) translateY(-20px);
+  }
+  80% {
+    transform: scale(1) translateY(-60px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.8) translateY(-80px);
+    opacity: 0;
+  }
+}

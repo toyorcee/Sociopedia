@@ -33,6 +33,12 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
+    isBusinessOwner: { type: Boolean, default: false }, 
     location: String,
     occupation: String,
     viewedProfile: Number,
@@ -40,6 +46,10 @@ const UserSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Add indexes to UserSchema
+UserSchema.index({ email: 1 }); // Unique index for email
+UserSchema.index({ firstName: "text", lastName: "text" }); // Text index for firstName and lastName
 
 const User = mongoose.model("User", UserSchema);
 export default User;

@@ -1,33 +1,101 @@
-import { Box, useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import Navbar from "scenes/navbar";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
-import MyPostWidget from "scenes/widgets/MyPostWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
 import UserWidget from "scenes/widgets/UserWidget";
 
 const ProfilePage = () => {
-  const [user, setUser] = useState(null);
   const { userId } = useParams();
+  const loggedInUserId = useSelector((state) => state.user._id);
+  const loggedInPicturePath = useSelector((state) => state.user.picturePath);
   const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
-  const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    setUser(data);
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Determine if the profile belongs to the logged-in user
+  const isOwnProfile = userId === loggedInUserId;
+
+  const fetchProfileData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/users/${userId}/profile`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.json();
+        throw new Error(errorText.message || "Failed to fetch profile data.");
+      }
+
+      const data = await response.json();
+
+      // Log user, friends, and posts separately after destructuring
+      const { user, friends, posts } = data;
+
+      setProfileData(data);
+    } catch (error) {
+      console.error("Error fetching profile data:", error.message);
+      setError(error.message);
+      toast.error(error.message || "Could not load profile data.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    fetchProfileData();
+  }, [userId, token]);
 
-  if (!user) return null;
+  if (!userId) {
+    return <Box> User ID is required!</Box>; // Early return if no userId is provided
+  }
+
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <p>{error}</p>
+      </Box>
+    );
+  }
+
+  if (!profileData) return null;
+
+  const { user, friends, posts } = profileData;
+
+  const propPicturePath = isOwnProfile
+    ? loggedInPicturePath
+    : profileData.user.picturePath;
 
   return (
     <Box>
@@ -40,17 +108,19 @@ const ProfilePage = () => {
         justifyContent="center"
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserWidget userId={userId} picturePath={user.picturePath} />
+          <UserWidget
+            userId={userId}
+            isOwnProfile={isOwnProfile}
+            propPicturePath={propPicturePath}
+          />
           <Box m="2rem 0" />
-          <FriendListWidget userId={userId} />
+          <FriendListWidget friends={friends} isProfilePage={true} />
         </Box>
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
         >
-          <MyPostWidget picturePath={user.picturePath} />
-          <Box m="2rem 0" />
-          <PostsWidget userId={userId} isProfile />
+          <PostsWidget posts={posts} isProfilePage={true} />
         </Box>
       </Box>
     </Box>

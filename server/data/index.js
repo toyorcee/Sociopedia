@@ -158,10 +158,12 @@ export const posts = [
       [userIds[3], true],
       [userIds[4], true],
     ]),
+    likeCount: 4, // Calculated from likes
+    commentCount: 3,
     comments: [
-      "random comment",
-      "another random comment",
-      "yet another random comment",
+      new mongoose.Types.ObjectId(), // Placeholder for actual Comment ObjectId
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
     ],
   },
   {
@@ -180,11 +182,13 @@ export const posts = [
       [userIds[1], true],
       [userIds[2], true],
     ]),
+    likeCount: 4,
+    commentCount: 4,
     comments: [
-      "one more random comment",
-      "and another random comment",
-      "no more random comments",
-      "I lied, one more random comment",
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
     ],
   },
   {
@@ -203,12 +207,14 @@ export const posts = [
       [userIds[3], true],
       [userIds[5], true],
     ]),
+    likeCount: 4,
+    commentCount: 5,
     comments: [
-      "one more random comment",
-      "I lied, one more random comment",
-      "I lied again, one more random comment",
-      "Why am I doing this?",
-      "I'm bored",
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
     ],
   },
   {
@@ -226,13 +232,15 @@ export const posts = [
       [userIds[6], true],
       [userIds[3], true],
     ]),
+    likeCount: 3,
+    commentCount: 6,
     comments: [
-      "I lied again, one more random comment",
-      "Why am I doing this?",
-      "I'm bored",
-      "I'm still bored",
-      "All I want to do is play video games",
-      "I'm going to play video games",
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
     ],
   },
   {
@@ -251,12 +259,14 @@ export const posts = [
       [userIds[5], true],
       [userIds[7], true],
     ]),
+    likeCount: 4,
+    commentCount: 5,
     comments: [
-      "I lied again, one more random comment",
-      "Why am I doing this?",
-      "Man I'm bored",
-      "What should I do?",
-      "I'm going to play video games",
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
     ],
   },
   {
@@ -273,13 +283,161 @@ export const posts = [
       [userIds[1], true],
       [userIds[2], true],
     ]),
-
+    likeCount: 2,
+    commentCount: 5,
     comments: [
-      "Can I play video games now?",
-      "No let's actually study",
-      "Never mind, I'm going to play video games",
-      "Stop it.",
-      "Michael, stop it.",
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
     ],
+  },
+];
+
+export const comments = [
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[0]._id,
+    userId: userIds[2],
+    text: "Looks like you’re having a blast!",
+    createdAt: Date.now() - 100000,
+    updatedAt: Date.now() - 100000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[0]._id,
+    userId: userIds[3],
+    text: "I second that!",
+    createdAt: Date.now() - 80000,
+    updatedAt: Date.now() - 80000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[0]._id,
+    userId: userIds[4],
+    text: "Why not invite us next time?",
+    createdAt: Date.now() - 60000,
+    updatedAt: Date.now() - 60000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[1]._id, // Linking to second post
+    userId: userIds[5],
+    text: "This post is on another level!",
+    createdAt: Date.now() - 120000,
+    updatedAt: Date.now() - 120000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[1]._id,
+    userId: userIds[7],
+    text: "Inspiring, as usual.",
+    createdAt: Date.now() - 110000,
+    updatedAt: Date.now() - 110000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[2]._id, // Linking to third post
+    userId: userIds[3],
+    text: "You always know just what to say!",
+    createdAt: Date.now() - 130000,
+    updatedAt: Date.now() - 130000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[2]._id,
+    userId: userIds[1],
+    text: "Let’s catch up soon.",
+    createdAt: Date.now() - 100000,
+    updatedAt: Date.now() - 100000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[2]._id,
+    userId: userIds[6],
+    text: "I'm waiting on the next post already!",
+    createdAt: Date.now() - 90000,
+    updatedAt: Date.now() - 90000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[3]._id, // Linking to fourth post
+    userId: userIds[2],
+    text: "True wisdom right here.",
+    createdAt: Date.now() - 140000,
+    updatedAt: Date.now() - 140000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[3]._id,
+    userId: userIds[5],
+    text: "This is spot on.",
+    createdAt: Date.now() - 120000,
+    updatedAt: Date.now() - 120000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[3]._id,
+    userId: userIds[6],
+    text: "Agreed!",
+    createdAt: Date.now() - 80000,
+    updatedAt: Date.now() - 80000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[4]._id, // Linking to fifth post
+    userId: userIds[0],
+    text: "Couldn’t agree more!",
+    createdAt: Date.now() - 50000,
+    updatedAt: Date.now() - 50000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[4]._id,
+    userId: userIds[7],
+    text: "This made my day.",
+    createdAt: Date.now() - 40000,
+    updatedAt: Date.now() - 40000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[4]._id,
+    userId: userIds[1],
+    text: "I can totally relate.",
+    createdAt: Date.now() - 30000,
+    updatedAt: Date.now() - 30000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[5]._id, // Linking to sixth post
+    userId: userIds[3],
+    text: "That's the spirit!",
+    createdAt: Date.now() - 200000,
+    updatedAt: Date.now() - 200000,
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    postId: posts[5]._id,
+    userId: userIds[5],
+    text: "Can I join next time?",
+    createdAt: Date.now() - 100000,
+    updatedAt: Date.now() - 100000,
+  },
+];
+
+export const replys = [
+  {
+    _id: new mongoose.Types.ObjectId(),
+    commentId: comments[0]._id, // Reference to the first comment
+    userId: userIds[3], // User replying to the comment
+    text: "I completely agree with your point!",
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    likes: new Map([
+      [userIds[1], true],
+      [userIds[4], true],
+    ]),
+    likeCount: 2, // Based on likes map
   },
 ];

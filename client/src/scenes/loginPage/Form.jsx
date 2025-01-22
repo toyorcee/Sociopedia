@@ -6,6 +6,7 @@ import {
   useMediaQuery,
   Typography,
   useTheme,
+  CircularProgress,
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
@@ -15,7 +16,9 @@ import { useDispatch } from "react-redux";
 import { setLogin } from "state";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
+import { toast } from "react-toastify";
 
+// Validation schemas and initial values
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
   lastName: yup.string().required("required"),
@@ -48,6 +51,7 @@ const initialValuesLogin = {
 
 const Form = () => {
   const [pageType, setPageType] = useState("login");
+  const [loading, setLoading] = useState(false);
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -55,45 +59,87 @@ const Form = () => {
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
 
+  // Register function
   const register = async (values, onSubmitProps) => {
-    // this allows us to send form info with image
-    const formData = new FormData();
-    for (let value in values) {
-      formData.append(value, values[value]);
-    }
-    formData.append("picturePath", values.picture.name);
-
-    const savedUserResponse = await fetch(
-      "http://localhost:3001/auth/register",
-      {
-        method: "POST",
-        body: formData,
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      for (let value in values) {
+        formData.append(value, values[value]);
       }
-    );
-    const savedUser = await savedUserResponse.json();
-    onSubmitProps.resetForm();
+      if (values.picture) {
+        formData.append("picturePath", values.picture.name);
+      }
 
-    if (savedUser) {
-      setPageType("login");
+      const savedUserResponse = await fetch(
+        "http://localhost:5000/auth/register",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!savedUserResponse.ok) {
+        const errorText = await savedUserResponse.json(); // Parse JSON error response
+        throw new Error(
+          errorText.message || "Registration failed. Please try again."
+        );
+      }
+
+      const savedUser = await savedUserResponse.json();
+      onSubmitProps.resetForm();
+      if (savedUser) {
+        toast.success("Registration successful! Please log in.", {
+          style: { backgroundColor: palette.primary.main, color: "#fff" },
+        });
+        setPageType("login");
+      }
+    } catch (error) {
+      console.error("Error during registration:", error.message);
+      toast.error(
+        error.message ||
+          "Registration failed, please check your network or try again."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Login function
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
-    const loggedIn = await loggedInResponse.json();
-    onSubmitProps.resetForm();
-    if (loggedIn) {
-      dispatch(
-        setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
-        })
+    try {
+      setLoading(true);
+      const loggedInResponse = await fetch("http://localhost:5000/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      if (!loggedInResponse.ok) {
+        const errorText = await loggedInResponse.json(); // Parse JSON error response
+        throw new Error(
+          errorText.message || "Login failed. Please check your credentials."
+        );
+      }
+
+      const loggedIn = await loggedInResponse.json();
+      onSubmitProps.resetForm();
+
+      if (loggedIn) {
+        dispatch(setLogin({ user: loggedIn.user, token: loggedIn.token }));
+        toast.success("Login successful!", {
+          style: { backgroundColor: palette.primary.main, color: "#fff" },
+        });
+        navigate("/home");
+      }
+    } catch (error) {
+      console.error("Error during login:", error.message);
+      toast.error(
+        error.message ||
+          "Login failed, please try again with correct credentials."
       );
-      navigate("/home");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -244,8 +290,15 @@ const Form = () => {
                 color: palette.background.alt,
                 "&:hover": { color: palette.primary.main },
               }}
+              disabled={loading} // Disable button while loading
             >
-              {isLogin ? "LOGIN" : "REGISTER"}
+              {loading ? (
+                <CircularProgress size={24} sx={{ color: "white" }} />
+              ) : isLogin ? (
+                "LOGIN"
+              ) : (
+                "REGISTER"
+              )}
             </Button>
             <Typography
               onClick={() => {

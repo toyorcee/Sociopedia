@@ -1,74 +1,118 @@
 import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Typography,
+  CircularProgress,
+  useTheme,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setFriends } from "state";
 import FlexBetween from "./FlexBetween";
-import UserImage from "./UserImage";
+import FriendImages from "./FriendsImages";
+import { toast } from "react-toastify";
+import { useState } from "react";
 
 const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { _id } = useSelector((state) => state.user);
+  const { _id: userId } = useSelector((state) => state.user || {});
   const token = useSelector((state) => state.token);
-  const friends = useSelector((state) => state.user.friends);
+  const friends = useSelector((state) => state.friends || []);
+
+  const [loading, setLoading] = useState(false);
 
   const { palette } = useTheme();
   const primaryLight = palette.primary.light;
   const primaryDark = palette.primary.dark;
   const main = palette.neutral.main;
-  const medium = palette.neutral.medium;
 
-  const isFriend = friends.find((friend) => friend._id === friendId);
+  // Truncate long names
+  const truncatedName = name.length > 20 ? `${name.slice(0, 20)}...` : name;
+
+  const isFriend = friends.some((friend) => friend._id === friendId);
 
   const patchFriend = async () => {
-    const response = await fetch(
-      `http://localhost:3001/users/${_id}/${friendId}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://localhost:5000/users/${userId}/${friendId}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update friendship.");
       }
-    );
-    const data = await response.json();
-    dispatch(setFriends({ friends: data }));
+
+      const updatedFriends = await response.json(); // This should contain full friend objects
+
+      // Dispatch the full updated friend list
+      dispatch(setFriends({ friends: updatedFriends }));
+
+      toast.success(
+        isFriend ? "Friend removed successfully." : "Friend added successfully."
+      );
+    } catch (err) {
+      toast.error(
+        err.message || "An error occurred while updating friendship."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <FlexBetween>
       <FlexBetween gap="1rem">
-        <UserImage image={userPicturePath} size="55px" />
+        <FriendImages friendId={friendId} picturePath={userPicturePath} />
         <Box
           onClick={() => {
             navigate(`/profile/${friendId}`);
-            navigate(0);
           }}
+          sx={{ marginLeft: "0.3rem", marginRight: "0.3rem" }}
         >
           <Typography
             color={main}
             variant="h5"
             fontWeight="500"
             sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "180px", 
               "&:hover": {
-                color: palette.primary.light,
+                color: primaryLight,
                 cursor: "pointer",
               },
             }}
           >
-            {name}
+            {truncatedName}
           </Typography>
-          <Typography color={medium} fontSize="0.75rem">
+          <Typography color={palette.neutral.medium} fontSize="0.75rem">
             {subtitle}
           </Typography>
         </Box>
       </FlexBetween>
       <IconButton
-        onClick={() => patchFriend()}
-        sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
+        onClick={patchFriend}
+        sx={{
+          backgroundColor: primaryLight,
+          p: "0.6rem",
+          marginLeft: "0.5rem", 
+        }}
+        disabled={loading}
       >
-        {isFriend ? (
+        {loading ? (
+          <CircularProgress size={24} sx={{ color: primaryDark }} />
+        ) : isFriend ? (
           <PersonRemoveOutlined sx={{ color: primaryDark }} />
         ) : (
           <PersonAddOutlined sx={{ color: primaryDark }} />

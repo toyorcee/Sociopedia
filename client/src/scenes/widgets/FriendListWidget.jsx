@@ -1,31 +1,61 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, CircularProgress, useTheme } from "@mui/material";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { setFriends } from "state";
 
-const FriendListWidget = ({ userId }) => {
+const FriendListWidget = ({ isProfilePage, friends: profileFriends }) => {
   const dispatch = useDispatch();
   const { palette } = useTheme();
-  const token = useSelector((state) => state.token);
-  const friends = useSelector((state) => state.user.friends);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const getFriends = async () => {
-    const response = await fetch(
-      `http://localhost:3001/users/${userId}/friends`,
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
+  const userId = useSelector((state) => state.user?._id);
+  const token = useSelector((state) => state.token);
+  const friendsFromRedux = useSelector((state) => state.friends || []);
+  const state = useSelector((state) => state);
+
+  // Determine which friends list to display
+  const displayFriends = isProfilePage ? profileFriends : friendsFromRedux;
+
+  const fetchFriends = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch(
+        `http://localhost:5000/users/${userId}/friends`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to fetch friends.");
       }
-    );
-    const data = await response.json();
-    dispatch(setFriends({ friends: data }));
+
+      const data = await response.json();
+      dispatch(setFriends({ friends: data }));
+    } catch (err) {
+      setError(err.message);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Fetch friends if not on the profile page
   useEffect(() => {
-    getFriends();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (!isProfilePage) {
+      fetchFriends();
+    }
+  }, [isProfilePage, userId, token, dispatch]);
+
+  // console.log("Display Friends:", displayFriends); // Log the friends to display
 
   return (
     <WidgetWrapper>
@@ -37,17 +67,35 @@ const FriendListWidget = ({ userId }) => {
       >
         Friend List
       </Typography>
-      <Box display="flex" flexDirection="column" gap="1.5rem">
-        {friends.map((friend) => (
-          <Friend
-            key={friend._id}
-            friendId={friend._id}
-            name={`${friend.firstName} ${friend.lastName}`}
-            subtitle={friend.occupation}
-            userPicturePath={friend.picturePath}
-          />
-        ))}
-      </Box>
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Typography variant="h6" color={palette.error.main} textAlign="center">
+          {error}
+        </Typography>
+      ) : displayFriends.length === 0 ? (
+        <Typography
+          variant="h6"
+          color={palette.neutral.dark}
+          textAlign="center"
+        >
+          No friends found.
+        </Typography>
+      ) : (
+        <Box display="flex" flexDirection="column" gap="1rem">
+          {displayFriends.map((friend) => (
+            <Friend
+              key={friend._id}
+              friendId={friend._id}
+              name={`${friend.firstName || "Unknown"} ${friend.lastName || ""}`}
+              subtitle={friend.occupation || "No occupation provided"}
+              userPicturePath={friend.picturePath || "/default-avatar.png"}
+            />
+          ))}
+        </Box>
+      )}
     </WidgetWrapper>
   );
 };

@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App";
 import authReducer from "./state";
 import { configureStore } from "@reduxjs/toolkit";
+import thunk from "redux-thunk";
+import { enableMapSet } from 'immer';
 import { Provider } from "react-redux";
 import {
   persistStore,
@@ -18,6 +20,9 @@ import {
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
 
+enableMapSet();
+
+// Persisted reducer setup
 const persistConfig = { key: "root", storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
@@ -27,9 +32,10 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(thunk), 
 });
 
+// Root render function
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
